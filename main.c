@@ -1,7 +1,7 @@
 #include "lvgl/lvgl.h"
 #include "lv_drivers/display/fbdev.h"
-//#include "lv_drivers/indev/evdev.h"
-#include "lv_drivers/indev/libinput_drv.h"
+#include "lv_drivers/indev/evdev.h"
+//#include "lv_drivers/indev/libinput_drv.h"
 
 #include <unistd.h>
 #include <pthread.h>
@@ -39,13 +39,14 @@ int main(void)
     lv_disp_drv_register(&disp_drv);
 
     /*Initialize and register a input driver*/
-    //evdev_init();
-    libinput_init();
+    evdev_init();
+    //libinput_init();
+
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);          /*Basic initialization*/
     indev_drv.type = LV_INDEV_TYPE_POINTER;
-    //indev_drv.read_cb = evdev_read;         /* Get the mouse position and state*/
-    indev_drv.read_cb = libinput_read;
+    indev_drv.read_cb = evdev_read;         /* Get the mouse position and state*/
+    //indev_drv.read_cb = libinput_read;
     lv_indev_drv_register(&indev_drv);
 
         sprintf(txt, "WT32-SC01 with LVGL v%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());

@@ -1,13 +1,18 @@
 #include "lvgl/lvgl.h"
 #include "lv_drivers/display/fbdev.h"
-#include "lv_drivers/indev/evdev.h"
-#include "lvgl/demos/lv_demo.h"
+//#include "lv_drivers/indev/evdev.h"
+#include "lv_drivers/indev/libinput_drv.h"
+
 #include <unistd.h>
 #include <pthread.h>
 #include <time.h>
 #include <sys/time.h>
+#include <stdio.h>
 
 #define DISP_BUF_SIZE (128 * 1024)
+
+void lv_button_demo(void);
+char txt[100];
 
 int main(void)
 {
@@ -33,18 +38,22 @@ int main(void)
     disp_drv.ver_res    = 480;
     lv_disp_drv_register(&disp_drv);
 
-    evdev_init();
-    /*Initialize and register an input device*/
+    /*Initialize and register a input driver*/
+    //evdev_init();
+    libinput_init();
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);          /*Basic initialization*/
     indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = evdev_read;         /* Get the mouse position and state*/
+    //indev_drv.read_cb = evdev_read;         /* Get the mouse position and state*/
+    indev_drv.read_cb = libinput_read;
     lv_indev_drv_register(&indev_drv);
 
+        sprintf(txt, "WT32-SC01 with LVGL v%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());
+        lv_obj_t *label = lv_label_create(lv_scr_act()); // full screen as the parent
+        lv_label_set_text(label, txt);                   // set label text
+        lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 20);    // Center but 20 from the top
 
-    /*Create a Demo*/
-    lv_demo_widgets();
-
+        lv_button_demo(); // lvl buttons
 
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
@@ -72,4 +81,62 @@ uint32_t custom_tick_get(void)
 
     uint32_t time_ms = now_ms - start_ms;
     return time_ms;
+}
+
+
+/* Counter button event handler */
+static void counter_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *btn = lv_event_get_target(e);
+    if (code == LV_EVENT_CLICKED)
+    {
+        static uint8_t cnt = 0;
+        cnt++;
+
+        /*Get the first child of the button which is the label and change its text*/
+        lv_obj_t *label = lv_obj_get_child(btn, 0);
+        lv_label_set_text_fmt(label, "Button: %d", cnt);
+        LV_LOG_USER("Clicked");
+
+    }
+}
+
+/* Toggle button event handler */
+static void toggle_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_VALUE_CHANGED)
+    {
+        LV_LOG_USER("Toggled");
+
+    }
+}
+
+/* Button with counter & Toggle Button */
+void lv_button_demo(void)
+{
+    lv_obj_t *label;
+
+    // Button with counter
+    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
+    lv_obj_add_event_cb(btn1, counter_event_handler, LV_EVENT_ALL, NULL);
+
+    lv_obj_set_pos(btn1, 100, 100); /*Set its position*/
+    lv_obj_set_size(btn1, 120, 50); /*Set its size*/
+
+    label = lv_label_create(btn1);
+    lv_label_set_text(label, "Button");
+    lv_obj_center(label);
+
+    // Toggle button
+    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
+    lv_obj_add_event_cb(btn2, toggle_event_handler, LV_EVENT_ALL, NULL);
+    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
+    lv_obj_set_pos(btn2, 250, 100); /*Set its position*/
+    lv_obj_set_size(btn2, 120, 50); /*Set its size*/
+
+    label = lv_label_create(btn2);
+    lv_label_set_text(label, "Toggle Button");
+    lv_obj_center(label);
 }

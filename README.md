@@ -4,7 +4,7 @@ Raspberry Pi : Model 3B running Rasberry PI OS (64)
 Display : Waveshare 2.8" 480x640 with Capacitive Touch
 
 
-## DEVICE SETUP
+## DISPLAY SETUP
 - Comment out `dtoverlay=vc4-fkms-V3D` in `/boot/config.txt`
 - Add the following TFT/Touch configuration at the end of `/boot/config.txt`
 ```
@@ -35,7 +35,7 @@ This works if you have Raspberry PI OS with desktop running
 - Install SDL   
 `sudo apt-get update && sudo apt-get install -y build-essential libsdl2-dev`
 - Clone LVGL Simulator repo    
-`git clone --recursive git clone https://github.com/littlevgl/pc_simulator.git`
+`git clone --recursive https://github.com/littlevgl/pc_simulator.git`
 - Install cmake    
 `sudo apt install cmake`   
 - Compile and build   

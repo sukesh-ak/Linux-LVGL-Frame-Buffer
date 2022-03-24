@@ -1,7 +1,13 @@
+#ifndef ENABLE_TOUCH
+    #define ENABLE_TOUCH 1
+#endif
+
 #include "lvgl/lvgl.h"
 #include "lv_drivers/display/fbdev.h"
-//#include "lv_drivers/indev/evdev.h"
-//#include "lv_drivers/indev/libinput_drv.h"
+
+#if ENABLE_TOUCH
+    #include "lv_drivers/indev/evdev.h"
+#endif
 
 #include <unistd.h>
 #include <pthread.h>
@@ -39,16 +45,16 @@ int main(void)
     lv_disp_drv_register(&disp_drv);
 
     /*Initialize and register a input driver*/
-    //evdev_init();
-    //libinput_init();
-/*
+#if ENABLE_TOUCH    
+    evdev_init();
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);          
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read_cb = evdev_read;         
     //indev_drv.read_cb = libinput_read;
     lv_indev_drv_register(&indev_drv);
-*/
+#endif
+
         sprintf(txt, "WT32-SC01 with LVGL v%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());
         lv_obj_t *label = lv_label_create(lv_scr_act()); // full screen as the parent
         lv_label_set_text(label, txt);                   // set label text

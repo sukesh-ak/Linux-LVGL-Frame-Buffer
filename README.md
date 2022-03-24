@@ -1,12 +1,10 @@
-# LVGL for frame buffer device (WORK IN PROGRESS)
+# LVGL on Linux
 
-LVGL configured to work with /dev/fb0 on Linux.   
-Raspberry Pi : Model 3B  
-Display : Waveshare 2.8" 640x480 with Capacitive Touch
+Raspberry Pi : Model 3B running Rasberry PI OS (64)   
+Display : Waveshare 2.8" 480x640 with Capacitive Touch
 
 
-## SETUP
-- Install cmake `sudo apt install cmake`
+## DEVICE SETUP
 - Comment out `dtoverlay=vc4-fkms-V3D` in `/boot/config.txt`
 - Add the following TFT/Touch configuration at the end of `/boot/config.txt`
 ```
@@ -32,15 +30,34 @@ dtoverlay=waveshare-28dpi-4b
 - Download and Copy 3 overlay files inside `/boot/overlays` folder
 https://www.waveshare.com/wiki/File:28DPIB_DTBO.zip
 
+## USING SDL
+This works if you have Raspberry PI OS with desktop running
+- Install SDL   
+`sudo apt-get update && sudo apt-get install -y build-essential libsdl2-dev`
+- Clone LVGL Simulator repo    
+`git clone --recursive git clone https://github.com/littlevgl/pc_simulator.git`
+- Install cmake    
+`sudo apt install cmake`   
+- Compile and build   
+`cd pc_simulator/ && mkdir build && cd build && cmake .. && make -j4`
+- Run the Application built using   
+`DISPLAY=:0 ./../bin/main`
+- To make your app FULL SCREEN, add below line inside `lv_drv_conf.h`   
+`#define SDL_FULLSCREEN  1`
+
+## USING FRAME BUFFER /dev/fb0 
+(WORK IN PROGRESS)   
 
 
-## TASKS
+### TASKS
 - [ ] LVGL 8.x display  
 - [ ] Touch,Mouse and Keyboard input  
 - [ ] Document the sample including base setup and display setup  
 
-When cloning this repository, also make sure to download submodules otherwise you will be missing key components.   
+
+### NOTE
+When cloning this repository, make sure to download submodules otherwise you will be missing required components.   
 `git submodule update --init --recursive`
 
-Based on blog here :
-https://blog.lvgl.io/2018-01-03/linux_fb
+##### References
+Frame Buffer method based on (this)(https://blog.lvgl.io/2018-01-03/linux_fb) blog post.

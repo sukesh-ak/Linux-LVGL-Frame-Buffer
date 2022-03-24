@@ -5,9 +5,9 @@ Raspberry Pi : Model 3B
 Display : Waveshare 2.8" 640x480 with Capacitive Touch
 
 ## TASKS
-[ ] LVGL 8.x display
-[ ] Touch,Mouse and Keyboard input
-[ ] Document the sample including base setup and display setup
+[ ] LVGL 8.x display  
+[ ] Touch,Mouse and Keyboard input  
+[ ] Document the sample including base setup and display setup  
 
 When cloning this repository, also make sure to download submodules (`git submodule update --init --recursive`) otherwise you will be missing key components.
 

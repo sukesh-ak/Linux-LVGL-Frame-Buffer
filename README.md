@@ -25,13 +25,27 @@ dtoverlay=waveshare-28dpi-4b
 ```
 - Add the following for Display rotation in `/boot/config.txt`   
 `display_rotate=1 #1：90；2: 180； 3: 270`
+- Follow these steps to align touch panel to the display rotation
+```
+sudo apt-get install xserver-xorg-input-libinput
+sudo mkdir /etc/X11/xorg.conf.d
+sudo cp /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/
+sudo nano /etc/X11/xorg.conf.d/40-libinput.conf
 
+// Add the following line where Identifier has 'touchscreen'
+Option "CalibrationMatrix" "0 1 0 -1 0 1 0 0 1"
+
+// 90 degree: Option "CalibrationMatrix" "0 1 0 -1 0 1 0 0 1"
+// 180 degree: Option "CalibrationMatrix" "-1 0 1 0 -1 1 0 0 1"
+// 270 degree: Option "CalibrationMatrix" "0 -1 1 1 0 0 0 0 1"
+```
 
 - Download and Copy 3 overlay files inside `/boot/overlays` folder
 https://www.waveshare.com/wiki/File:28DPIB_DTBO.zip
 
 ## USING SDL
 This works if you have Raspberry PI OS with desktop running
+
 - Install SDL   
 `sudo apt-get update && sudo apt-get install -y build-essential libsdl2-dev`
 - Clone LVGL Simulator repo    
@@ -45,7 +59,7 @@ This works if you have Raspberry PI OS with desktop running
 - To make your app FULL SCREEN, add below line inside `lv_drv_conf.h`   
 `#define SDL_FULLSCREEN  1`
 
-## USING FRAME BUFFER /dev/fb0 
+## USING LINUX FRAME BUFFER /dev/fb0 
 (WORK IN PROGRESS)   
 
 
@@ -60,4 +74,5 @@ When cloning this repository, make sure to download submodules otherwise you wil
 `git submodule update --init --recursive`
 
 ##### References
-Frame Buffer method based on (this)(https://blog.lvgl.io/2018-01-03/linux_fb) blog post.
+Display setup instructions [here](https://www.waveshare.com/wiki/2.8inch_DPI_LCD)   
+Frame Buffer method based on [this](https://blog.lvgl.io/2018-01-03/linux_fb) blog post.

@@ -51,11 +51,10 @@ int main(void)
     lv_indev_drv_init(&indev_drv);          
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read_cb = evdev_read;         
-    //indev_drv.read_cb = libinput_read;
     lv_indev_drv_register(&indev_drv);
 #endif
 
-        sprintf(txt, "WT32-SC01 with LVGL v%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());
+        sprintf(txt, "Raspberry Pi with LVGL v%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());
         lv_obj_t *label = lv_label_create(lv_scr_act()); // full screen as the parent
         lv_label_set_text(label, txt);                   // set label text
         lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 20);    // Center but 20 from the top
